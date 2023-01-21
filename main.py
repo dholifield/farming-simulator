@@ -14,15 +14,20 @@ TILE_HEIGHT = 36
 
 #create a 25 x 25 array of random zeros and ones
 #array = np.random.randint(40, size=(12, 12))
-array = np.random.randint(2, size=(25, 25))
+crop_array = np.random.randint(3, size=(25, 25))
+array = np.random.randint(40, size=(25, 25))
 
 #code to import music
 #mixer.init()
-#mixer.music.load("_____.mp3") #need to import music into file
+#mixer.music.load("Farming Song.mp3") #need to import music into file
 #mixer.music.play(-1) #infinitely loops music
-#mixer.music.set_volume(0.5) #sets volume to 50%
+#mixer.music.set_volume(0.2) #sets volume to 20%
 
-#might need to figure out a way to stop music when game is closed
+#might need to figure out a way to stop music when game is closed (should be fine)
+
+#ambient music code, if multiple ambient music
+#a
+
 
 def getTileLocation(tile_x, tile_y):
     x = WIDTH / 2 + (tile_x * TILE_WIDTH / 2 - tile_y * TILE_WIDTH / 2)
@@ -55,16 +60,52 @@ def main():
 
     running = True
 
-    #fill the screen with tiles
-    for i in range(0, 25):
-        for j in range(0, 25):
-            #drawTile(screen, i, j, (randrange(110, 120), randrange(210, 220), randrange(140, 150)))
-            drawImageTile(screen, i, j, pygame.image.load("dirt.png"))
+    for i in range(0, 13):
+        for j in range(-7, 0):
+            drawBigImageTile(screen, 2*j, 2*i, pygame.image.load("images/tree.png"))
+            drawBigImageTile(screen, 2*i, 2*j, pygame.image.load("images/tree.png"))
 
-    for i in range (0,25):
-        for j in range (0,25):
-            if array[i][j] == 1:
-                drawImageTile(screen, i, j, pygame.image.load("corn_tile.png"))
+    for i in range(0, 25):
+        for j in range(25, 40):
+            drawImageTile(screen, i, j, pygame.image.load("images/grass.png"))
+            drawImageTile(screen, j, i, pygame.image.load("images/water.png"))
+
+    for i in range (0, 25):
+        drawImageTile(screen, 25, i, pygame.image.load("images/grass.png"))
+        drawImageTile(screen, 26, i, pygame.image.load("images/grass.png"))
+        drawImageTile(screen, 27, i, pygame.image.load("images/dirt.png"))
+
+
+
+
+    #fill the screen with tiles
+    # for i in range(0, 25):
+    #     for j in range(0, 25):
+    #         drawTile(screen, i, j, (randrange(110, 120), randrange(210, 220), randrange(140, 150)))
+    #         if array[i][j] == 1:
+    #             drawImageTile(screen, i, j, pygame.image.load("images/rocks.png"))
+    #         elif array[i][j] == 2:
+    #             drawImageTile(screen, i, j, pygame.image.load("images/tree2.png"))
+    #         elif array[i][j] > 2 and array[i][j] < 20:
+    #             drawImageTile(screen, i, j, pygame.image.load("images/corn.png"))
+    #         else:
+    #             drawImageTile(screen, i, j, pygame.image.load("images/grass.png"))
+
+
+
+    # for i in range (1,24):
+    #     for j in range (1,24):
+    #         if crop_array[i][j] == 1:
+    #             drawImageTile(screen, i, j, pygame.image.load("images/corn.png"))
+
+    # tractor = pygame.image.load("images/tractor.png")
+    # tractor = pygame.transform.scale(tractor, (120, 80))
+    # tractor = pygame.transform.flip(tractor, True, False)
+    # screen.blit(tractor, (400, 800))
+
+    barn = pygame.image.load("images/barn.png")
+    barn = pygame.transform.scale(barn, (400, 350))
+    screen.blit(barn, (5, 550))
 
     # for i in range (0, 12):
     #     for j in range (0, 12):

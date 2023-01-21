@@ -1,13 +1,12 @@
 class Tile():
-    def __init__(self, x, y):
+    def __init__(self, type, price, x, y):
+        self.type = type
+        self.price = price
         self.x = x
         self.y = y
-        self.content = None #can be barn or any type of crop
         self.weather = self.calculateWeather()
         self.terrain = self.calculateTerrain()
 
-    def calculateWeather(self):
+    def updatePrice(self):
         pass
-
-    def calculateTerrain(self):
-        pass
+    
