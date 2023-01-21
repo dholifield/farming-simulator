@@ -7,6 +7,7 @@ import numpy as np
 from Map import *
 from Constants import *
 from Tile import *
+from Tractor import *
 
 def main():
     pygame.init()
@@ -14,18 +15,25 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     running = True
-
-    background = pygame.image.load("images/background.png")
-    screen.blit(background, (0, 0))
     
     map = Map(0, 0)
-    map.render(screen)
+    map.drawBackground(screen)
+    map.draw(screen)
+
+    tractor = Tractor()
 
     pygame.display.flip()
 
     while running:
-        sleep(1)
+        # stop the game if the user closes the window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
+        map.drawBackground(screen)
+
+        tractor.update()
+        
 
 if __name__ == "__main__":
     main()

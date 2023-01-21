@@ -9,10 +9,7 @@ class Map():
         self.tiles = np.zeros((25, 25))
         self.lat = lat
         self.lon = lon
-        for i in range(1, 24):
-            for j in range(1, 24):
-                self.tiles[i][j] = 1
-        print(self.tiles)
+        self.generateTerrain()
 
     def calculateWeather(self):
         pass
@@ -21,9 +18,16 @@ class Map():
         pass
 
     def generateTerrain(self):
-        
+        # fill everything with dirt
+        for i in range(1, 24):
+            for j in range(1, 24):
+                self.tiles[i][j] = 1
 
-    def render(self, screen):
+        # randomly add 10 rocks to the map
+        for i in range(0, 10):
+            self.tiles[randrange(1, 24)][randrange(1, 24)] = 2
+
+    def draw(self, screen):
         for i in range(0, 25):
             for j in range(0, 25):
                 drawTile(screen, i, j, (randrange(110, 120), randrange(210, 220), randrange(140, 150)))
@@ -31,10 +35,15 @@ class Map():
                     drawImageTile(screen, i, j, pygame.image.load("images/grass.png"))
                 elif self.tiles[i][j] == 1:
                     drawImageTile(screen, i, j, pygame.image.load("images/dirt.png"))
-                elif self.tiles[i][j] > 2 and self.tiles[i][j] < 20:
-                    drawImageTile(screen, i, j, pygame.image.load("images/corn.png"))
-                else:
-                    drawImageTile(screen, i, j, pygame.image.load("images/grass.png"))
+                elif self.tiles[i][j] == 2:
+                    # random boolean to determine if rock is on the left or right
+                    rock = pygame.image.load("images/rock.png")
+                    if randrange(0, 2) == 0:
+                        rock = pygame.transform.flip(rock, True, False)
+                    drawImageTile(screen, i, j, rock)
+
+    def drawBackground(selfm, screen):
+        screen.blit(pygame.image.load("images/background.png"), (0, 0))
     
     def generateBackrgound(self, screen):
            # generate background image
