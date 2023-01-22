@@ -4,8 +4,6 @@ import numpy as np
 import Constants as c
 from Tile import *
 
-
-
 class Map():
     def __init__(self, lat, lon):
         self.tiles = np.zeros((25, 25))
@@ -19,6 +17,7 @@ class Map():
         self.corn_image = pygame.image.load("images/corn.png").convert_alpha()
         self.sprout_image = pygame.image.load("images/sprout.png").convert_alpha()
         self.background = pygame.image.load("images/background.png").convert()
+        self.hit_rock = False
 
     def calculateWeather(self):
         pass
@@ -37,19 +36,29 @@ class Map():
             self.tiles[randrange(1, 24)][randrange(1, 24)] = 2
 
     def update(self, harvester, planter):
+        for i in range (0, 25):
+            for j in range (0, 25):
+                if self.tiles[i][j] == 4:
+                    self.sprout_times[i][j] -= 1
+                    if self.sprout_times[i][j] <= 0:
+                        self.tiles[i][j] = 3
         harvester_tile = getClosestTile((harvester.x, harvester.y))
         planter_tile = getClosestTile((planter.x, planter.y))
         if harvester_tile[0] >= 0 and harvester_tile[0] < 25 and harvester_tile[1] >= 0 and harvester_tile[1] < 25:
             if self.tiles[harvester_tile[0]][harvester_tile[1]] == 3:
                 self.tiles[harvester_tile[0]][harvester_tile[1]] = 1
                 c.corn_count += c.CORN_TILE_AMOUNT
-            if self.tiles[harvester_tile[0]][harvester_tile[1]] == 2:
+            if self.tiles[harvester_tile[0]][harvester_tile[1]] == 2 and not self.hit_rock:
                 c.corn_count /= 2
+                self.hit_rock = True
+            elif self.tiles[harvester_tile[0]][harvester_tile[1]] != 2 and self.hit_rock:
+                self.hit_rock = False
         if planter_tile[0] >= 0 and planter_tile[0] < 25 and planter_tile[1] >= 0 and planter_tile[1] < 25:
             if self.tiles[planter_tile[0]][planter_tile[1]] == 1:
                 if c.balance >= c.SEED_COST:
                     self.tiles[planter_tile[0]][planter_tile[1]] = 4
                     c.balance -= c.SEED_COST
+                    self.sprout_times[planter_tile[0]][planter_tile[1]] = randrange(50, 60) * 60 
 
     def draw(self, screen):
         for i in range(0, 25):

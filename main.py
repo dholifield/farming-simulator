@@ -9,6 +9,8 @@ import Constants as c
 from Tile import *
 from Tractor import *
 from Info import *
+from Particles import *
+from Music import *
 
 def main():
     pygame.init()
@@ -23,6 +25,9 @@ def main():
     planter = Tractor("planter", pygame.K_2, (400, 850))
     path = Path()
     info = Info()
+    music = Music()
+
+    fertilizer_particles = ParticleSystem(c.WHITE)
 
     pygame.display.flip()
 
@@ -43,6 +48,11 @@ def main():
 
         path.update(screen, mouse, click)
 
+        if planter.running:
+            fertilizer_particles.spawn_particle(planter.x, planter.y)
+        fertilizer_particles.update()
+        fertilizer_particles.draw(screen)
+
         harvester.update(path)
         harvester.draw(screen)
 
@@ -50,8 +60,10 @@ def main():
         planter.draw(screen)
 
         info.update()
+        info.updateCornPrice()
         info.draw(screen)
         info.sellCornButton(mouse, click)
+        info.showGraph(screen)
 
         pygame.display.flip()
 

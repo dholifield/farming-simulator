@@ -4,6 +4,7 @@ GREEN = (147, 216, 175)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (128, 128, 128)
+YELLOW = (255, 255, 0)
 
 TILE_WIDTH = 72
 TILE_HEIGHT = 36
@@ -12,5 +13,7 @@ CORN_TILE_AMOUNT =  1
 SEED_COST = 1.00
 CORN_PRICE = 5.00
 
+TRACTOR_SPEED = 3
+
 corn_count = 0
-balance = 50.00
+balance = 100.00

@@ -21,7 +21,6 @@ class Tractor():
         self.heading = 45
         self.running = False
         self.pressed = False
-        self.speed = 3
         self.path = Path()
     
     def draw(self, screen):
@@ -57,17 +56,16 @@ class Tractor():
         else:
             self.pressed = False
         if self.running:
-            if math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2) > 5:
+            if math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2) > 2:
                 self.heading = math.degrees(math.atan2(target[1] - self.y, target[0] - self.x))
-                self.x += self.speed * math.cos(math.radians(self.heading))
-                self.y += self.speed * math.sin(math.radians(self.heading))
+                self.x += c.TRACTOR_SPEED * math.cos(math.radians(self.heading))
+                self.y += c.TRACTOR_SPEED * math.sin(math.radians(self.heading))
 
     def getTarget(self, path):
         #get distance from tractor to target
         if len(path.path) > 0:
             target = path.toCoords()[self.path.index]
-            distance = math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2)
-            if distance < 10:
+            if math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2) < 5:
                 self.path.index += 1
                 if self.path.index >= len(path.path):
                     self.path.index = 0
@@ -127,13 +125,17 @@ class Path():
         #add a point to the path
         self.path = np.append(self.path, [[x, y]], axis=0)
 
+    def removePoint(self):
+        #remove the last point from the path
+        self.path = np.delete(self.path, -1, 0)
+
     def draw(self, screen, tile):
         #draw the path
         if self.selecting:
             if tile[0] >= 0 and tile[0] <= 24 and tile[1] >= 0 and tile[1] <= 24:
                 drawTileAlpha(screen, tile, (255, 0, 0, 100))
             if len(self.path) > 1:
-                pygame.draw.lines(screen, c.WHITE, False, self.toCoords(), 3)
+                pygame.draw.lines(screen, c.WHITE, False, self.toCoords(), 2)
 
     def update(self, screen, mouse, click):
         tile = getClosestTile(mouse)
@@ -141,6 +143,9 @@ class Path():
             self.clicked = True
             if tile[0] >= 0 and tile[0] <= 24 and tile[1] >= 0 and tile[1] <= 24:
                 self.addPoint(tile[0], tile[1])
+        elif click[1] and not self.clicked:
+            self.clicked = True
+            self.removePoint()
         elif not click[0]:
             self.clicked = False
         self.draw(screen, tile)
