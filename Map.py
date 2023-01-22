@@ -7,7 +7,11 @@ from Tile import *
 class Map():
     def __init__(self, lat, lon):
         self.tiles = np.zeros((25, 25))
+        #make a 25x25 array of random numbers from 2000 to 3000
         self.sprout_times = np.zeros((25, 25))
+        for i in range(0, 25):
+            for j in range(0, 25):
+                self.sprout_times[i][j] = randrange(0, 500)
         self.lat = lat
         self.lon = lon
         self.generateTerrain()
@@ -18,6 +22,7 @@ class Map():
         self.sprout_image = pygame.image.load("images/sprout.png").convert_alpha()
         self.background = pygame.image.load("images/background.png").convert()
         self.hit_rock = False
+        self.delay = 10
 
     def calculateWeather(self):
         pass
@@ -26,10 +31,10 @@ class Map():
         pass
 
     def generateTerrain(self):
-        # fill everything with dirt
+        # fill everything with seeds
         for i in range(1, 24):
             for j in range(1, 24):
-                self.tiles[i][j] = 3
+                self.tiles[i][j] = 4
 
         # randomly add 10 rocks to the map
         for i in range(0, 20):
@@ -39,7 +44,7 @@ class Map():
         for i in range (0, 25):
             for j in range (0, 25):
                 if self.tiles[i][j] == 4:
-                    self.sprout_times[i][j] -= 1
+                    self.sprout_times[i][j] -= c.GROW_SPEED / 2
                     if self.sprout_times[i][j] <= 0:
                         self.tiles[i][j] = 3
         harvester_tile = getClosestTile((harvester.x, harvester.y))
@@ -58,7 +63,9 @@ class Map():
                 if c.balance >= c.SEED_COST:
                     self.tiles[planter_tile[0]][planter_tile[1]] = 4
                     c.balance -= c.SEED_COST
-                    self.sprout_times[planter_tile[0]][planter_tile[1]] = randrange(50, 60) * 60 
+                    self.sprout_times[planter_tile[0]][planter_tile[1]] = randrange(50, 60) * 60
+                else:
+                    planter.running = False
 
     def draw(self, screen):
         for i in range(0, 25):
@@ -73,6 +80,10 @@ class Map():
                     drawImageTile(screen, (i, j), self.corn_image)
                 elif self.tiles[i][j] == 4:
                     drawImageTile(screen, (i, j), self.sprout_image)
+                if self.delay > 0:
+                        pygame.time.delay(self.delay)
+                        pygame.display.flip()
+        self.delay = 0
 
     def drawBackground(self, screen):
         screen.blit(self.background, (0, 0))

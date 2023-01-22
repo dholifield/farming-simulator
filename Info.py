@@ -7,12 +7,12 @@ corn_data = fid.readlines()
 fid.close()
 
 class Info():
-
     def __init__(self):
         self.corn_logo = pygame.transform.scale(pygame.image.load("images/corn_icon.png").convert_alpha(), (75, 75))
         self.coin_logo = pygame.transform.scale(pygame.image.load("images/coin.png").convert_alpha(), (62,62))
         #self.bank_logo = pygame.image.load("images/tractor270.png").convert_alpha()
         self.font = pygame.font.Font("consolas.ttf", 20)
+        self.font2 = pygame.font.Font("consolas.ttf", 15)
         self.text_corn = self.font.render("Corn: " + str(c.corn_count), True, c.WHITE)
         self.text_balance = self.font.render("Balance: $%.2f" %c.balance, True, c.WHITE)
         self.text_corn_price = self.font.render("Corn Price: $%.2f" %c.CORN_PRICE, True, c.WHITE)
@@ -22,6 +22,14 @@ class Info():
         self.corn_index = randrange(0, len(corn_data))
         self.timer = 120
         self.past_five = []
+
+        self.speed_button = self.font2.render("Upgrade Speed [3] [$1000]", True, c.WHITE)
+        self.surface_speed_button = pygame.Surface((220, 30))
+        self.speed_button_clicked = False
+
+        self.yield_button = self.font2.render("Upgrade Growing [1] [$2500]", True, c.WHITE)
+        self.surface_yield_button = pygame.Surface((235, 30))
+        self.yield_button_clicked = False
 
     def updateCornPrice(self): #add update later
         if self.timer == 0:
@@ -87,11 +95,47 @@ class Info():
         self.surface_button.fill(c.GRAY)
         screen.blit(self.surface_button, (self.surface_left_pos[0] + 65, self.surface_left_pos[1] + 83))
         screen.blit(self.sell_text, (self.surface_left_pos[0] + 79, self.surface_left_pos[1] + 100))
-        pass
+
+        #speed button
+        self.surface_speed_button.fill(c.GRAY)
+        screen.blit(self.surface_speed_button, (500, c.HEIGHT-35))
+        screen.blit(self.speed_button, (510, c.HEIGHT-28))
+
+        #yield button
+        self.surface_yield_button.fill(c.GRAY)
+        screen.blit(self.surface_yield_button, (250, c.HEIGHT-35))
+        screen.blit(self.yield_button, (260, c.HEIGHT-28))
 
     def sellCornButton(self, mouse, click):
-       if click[0] == 1 and mouse[0] > self.surface_left_pos[0] + 50 and mouse[0] < self.surface_left_pos[0] + 200 and mouse[1] > self.surface_left_pos[1] + 50 and mouse[1] < self.surface_left_pos[1] + 125:  
+        if click[0] == 1 and mouse[0] > self.surface_left_pos[0] + 50 and mouse[0] < self.surface_left_pos[0] + 200 and mouse[1] > self.surface_left_pos[1] + 50 and mouse[1] < self.surface_left_pos[1] + 125:  
           self.sellCorn()
-          self.update() 
+
+    def speedButton(self, mouse, click):
+        if click[0] == 1 and mouse[0] > 500 and mouse[0] < 720 and mouse[1] > c.HEIGHT-35 and mouse[1] < c.HEIGHT-5:
+            if not self.speed_button_clicked:
+                if c.balance >= c.TRACTOR_SPEED_COST and c.TRACTOR_SPEED < 10:
+                    c.TRACTOR_SPEED += 1
+                    c.balance -= c.TRACTOR_SPEED_COST
+                    c.TRACTOR_SPEED_COST *= 1.5
+                    self.speed_button = self.font2.render("Upgrade Speed ["+str(c.TRACTOR_SPEED)+"] [$"+str(int(c.TRACTOR_SPEED_COST))+"]", True, c.WHITE)
+                if c.TRACTOR_SPEED == 10:
+                    self.speed_button = self.font2.render("Upgrade Speed ["+str(c.TRACTOR_SPEED)+"] [MAX]", True, c.WHITE)
+                self.speed_button_clicked = True
+        else:
+            self.speed_button_clicked = False
+
+    def yieldButton(self, mouse, click):
+        if click[0] == 1 and mouse[0] > 250 and mouse[0] < 485 and mouse[1] > c.HEIGHT-35 and mouse[1] < c.HEIGHT-5:
+            if not self.yield_button_clicked:
+                if c.balance >= c.GROW_SPEED_COST and c.GROW_SPEED < 5:
+                    c.GROW_SPEED += 1
+                    c.balance -= c.GROW_SPEED_COST
+                    c.GROW_SPEED_COST *= 1.5
+                    self.yield_button = self.font2.render("Upgrade Growing ["+str(c.GROW_SPEED)+"] [$"+str(int(c.GROW_SPEED_COST))+"]", True, c.WHITE)
+                if c.GROW_SPEED == 5:
+                    self.yield_button = self.font2.render("Upgrade Growing ["+str(c.GROW_SPEED)+"] [MAX]", True, c.WHITE)
+                self.yield_button_clicked = True
+        else:
+            self.yield_button_clicked = False
 
         

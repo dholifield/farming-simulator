@@ -11,18 +11,33 @@ from Tractor import *
 from Info import *
 from Particles import *
 from Music import *
+from Menu import *
 
 def main():
     pygame.init()
     pygame.display.set_caption("Farming Simulator")
     screen = pygame.display.set_mode((c.WIDTH, c.HEIGHT))
 
+    menu = Menu(screen)
     map = Map(0, 0)
     map.drawBackground(screen)
+
+    while 1:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return
+
+        keys = pygame.key.get_pressed()
+        if any(keys):
+            break
+    # end while
+
+    menu.stopMusic()
+
     map.draw(screen)
 
-    harvester = Tractor("harvester", pygame.K_1, (480, 800))
-    planter = Tractor("planter", pygame.K_2, (400, 850))
+    harvester = Tractor("harvester", pygame.K_1, (520, 780))
+    planter = Tractor("planter", pygame.K_2, (450, 820))
     path = Path()
     info = Info()
     music = Music()
@@ -59,11 +74,15 @@ def main():
         planter.update(path)
         planter.draw(screen)
 
-        info.update()
         info.updateCornPrice()
-        info.draw(screen)
+        info.speedButton(mouse, click)
+        info.yieldButton(mouse, click)
         info.sellCornButton(mouse, click)
+        info.update()
+        info.draw(screen)
         info.showGraph(screen)
+
+        music.update(harvester.running or planter.running)
 
         pygame.display.flip()
 

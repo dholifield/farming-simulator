@@ -22,6 +22,7 @@ class Tractor():
         self.running = False
         self.pressed = False
         self.path = Path()
+        self.index = 0
     
     def draw(self, screen):
         while self.heading < 0:
@@ -64,12 +65,14 @@ class Tractor():
     def getTarget(self, path):
         #get distance from tractor to target
         if len(path.path) > 0:
-            target = path.toCoords()[self.path.index]
+            if self.index >= len(path.path):
+                self.index = 0
+            target = path.toCoords()[self.index]
             if math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2) < 5:
-                self.path.index += 1
-                if self.path.index >= len(path.path):
-                    self.path.index = 0
-                target = path.toCoords()[self.path.index]
+                self.index += 1
+                if self.index >= len(path.path):
+                    self.index = 0
+                target = path.toCoords()[self.index]
         else:
             target = (self.x, self.y)
         return target
@@ -112,13 +115,13 @@ class Path():
         self.path = np.empty((0, 2))
         self.clicked = False
         self.selecting = True
-        self.index = 0
 
     def toCoords(self):
         #convert the path to coordinates
         coords = []
-        for point in self.path:
-            coords.append(getCenterTileLocation(point))
+        if len(self.path) > 0:
+            for point in self.path:
+                coords.append(getCenterTileLocation(point))
         return coords
 
     def addPoint(self, x, y):
@@ -127,7 +130,8 @@ class Path():
 
     def removePoint(self):
         #remove the last point from the path
-        self.path = np.delete(self.path, -1, 0)
+        if len(self.path) > 0:
+            self.path = np.delete(self.path, -1, 0)
 
     def draw(self, screen, tile):
         #draw the path
@@ -143,10 +147,10 @@ class Path():
             self.clicked = True
             if tile[0] >= 0 and tile[0] <= 24 and tile[1] >= 0 and tile[1] <= 24:
                 self.addPoint(tile[0], tile[1])
-        elif click[1] and not self.clicked:
+        elif click[2] and not self.clicked:
             self.clicked = True
             self.removePoint()
-        elif not click[0]:
+        elif not click[0] and not click[2]:
             self.clicked = False
         self.draw(screen, tile)
         
