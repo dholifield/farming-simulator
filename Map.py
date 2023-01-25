@@ -55,6 +55,7 @@ class Map():
                 c.corn_count += c.CORN_TILE_AMOUNT
             if self.tiles[harvester_tile[0]][harvester_tile[1]] == 2 and not self.hit_rock:
                 c.corn_count /= 2
+                harvester.running = False
                 self.hit_rock = True
             elif self.tiles[harvester_tile[0]][harvester_tile[1]] != 2 and self.hit_rock:
                 self.hit_rock = False
