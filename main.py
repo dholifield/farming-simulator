@@ -1,61 +1,60 @@
-import pygame
 from time import sleep, time
-from pygame.locals import *
-from random import randrange
-from pygame import mixer
-import numpy as np
-from Map import *
 import Constants as c
-from Tile import *
+import Music
+from Map import *
 from Tractor import *
 from Info import *
 from Particles import *
-from Music import *
-from Menu import *
 
 def main():
-    pygame.init()
-    pygame.display.set_caption("Farming Simulator")
-    screen = pygame.display.set_mode((c.WIDTH, c.HEIGHT))
+    c.pygame.init()
+    Music.init()
+    Music.playMenu()
+    c.pygame.display.set_caption("Farming Simulator")
+    screen = c.pygame.display.set_mode((c.WIDTH, c.HEIGHT))
 
-    menu = Menu(screen)
-    map = Map(0, 0)
-    map.drawBackground(screen)
+    # menu screen
+    screen.blit(c.pygame.image.load("images/menu.png").convert(), (0,0))
+    c.pygame.display.flip()   
 
+    # wait until a button is pressed
     while 1:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in c.pygame.event.get():
+            if event.type == c.pygame.QUIT:
                 return
 
-        keys = pygame.key.get_pressed()
+        keys = c.pygame.key.get_pressed()
         if any(keys):
             break
     # end while
 
-    menu.stopMusic()
-
+    # create the map
+    map = Map(0, 0)
+    map.drawBackground(screen)
     map.draw(screen)
 
-    harvester = Tractor("harvester", pygame.K_1, (520, 780))
-    planter = Tractor("planter", pygame.K_2, (450, 820))
+    # update music
+    Music.playGame()
+
+    # create the tractors
+    harvester = Tractor("harvester", c.pygame.K_1, (520, 780))
+    planter = Tractor("planter", c.pygame.K_2, (450, 820))
     path = Path()
     info = Info()
-    music = Music()
-
     fertilizer_particles = ParticleSystem(c.WHITE)
 
-    pygame.display.flip()
+    c.pygame.display.flip()
 
     while 1:
         t0 = time()
 
         # stop the game if the user closes the window
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in c.pygame.event.get():
+            if event.type == c.pygame.QUIT:
                 return
 
-        mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
+        mouse = c.pygame.mouse.get_pos()
+        click = c.pygame.mouse.get_pressed()
 
         map.drawBackground(screen)
         map.update(harvester, planter)
@@ -82,9 +81,9 @@ def main():
         info.draw(screen)
         info.showGraph(screen)
 
-        music.update(harvester.running or planter.running)
+        Music.update(harvester.running or planter.running)
 
-        pygame.display.flip()
+        c.pygame.display.flip()
 
         tf = time()
 

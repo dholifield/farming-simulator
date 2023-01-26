@@ -1,21 +1,17 @@
-import pygame
-import math
-import numpy as np
 import Constants as c
-from Tile import *
 
 class Tractor():
     def __init__(self, type, button, start):
         self.type = type
         self.button = button
-        self.image0 = pygame.transform.scale(pygame.image.load("images/"+self.type+"/"+self.type+"0.png").convert_alpha(), (178, 100))
-        self.image45 = pygame.transform.scale(pygame.image.load("images/"+self.type+"/"+self.type+"45.png").convert_alpha(), (178, 100))
-        self.image90 = pygame.transform.scale(pygame.image.load("images/"+self.type+"/"+self.type+"90.png").convert_alpha(), (178, 100))
-        self.image135 = pygame.transform.scale(pygame.image.load("images/"+self.type+"/"+self.type+"135.png").convert_alpha(), (178, 100))
-        self.image180 = pygame.transform.scale(pygame.image.load("images/"+self.type+"/"+self.type+"180.png").convert_alpha(), (178, 100))
-        self.image225 = pygame.transform.scale(pygame.image.load("images/"+self.type+"/"+self.type+"225.png").convert_alpha(), (178, 100))
-        self.image270 = pygame.transform.scale(pygame.image.load("images/"+self.type+"/"+self.type+"270.png").convert_alpha(), (178, 100))
-        self.image315 = pygame.transform.scale(pygame.image.load("images/"+self.type+"/"+self.type+"315.png").convert_alpha(), (178, 100))
+        self.image0 = c.pygame.transform.scale(c.pygame.image.load("images/"+self.type+"/"+self.type+"0.png").convert_alpha(), (178, 100))
+        self.image45 = c.pygame.transform.scale(c.pygame.image.load("images/"+self.type+"/"+self.type+"45.png").convert_alpha(), (178, 100))
+        self.image90 = c.pygame.transform.scale(c.pygame.image.load("images/"+self.type+"/"+self.type+"90.png").convert_alpha(), (178, 100))
+        self.image135 = c.pygame.transform.scale(c.pygame.image.load("images/"+self.type+"/"+self.type+"135.png").convert_alpha(), (178, 100))
+        self.image180 = c.pygame.transform.scale(c.pygame.image.load("images/"+self.type+"/"+self.type+"180.png").convert_alpha(), (178, 100))
+        self.image225 = c.pygame.transform.scale(c.pygame.image.load("images/"+self.type+"/"+self.type+"225.png").convert_alpha(), (178, 100))
+        self.image270 = c.pygame.transform.scale(c.pygame.image.load("images/"+self.type+"/"+self.type+"270.png").convert_alpha(), (178, 100))
+        self.image315 = c.pygame.transform.scale(c.pygame.image.load("images/"+self.type+"/"+self.type+"315.png").convert_alpha(), (178, 100))
         self.x = start[0]
         self.y = start[1]
         self.heading = 45
@@ -50,17 +46,17 @@ class Tractor():
 
     def update(self, path):
         target = self.getTarget(path)
-        if pygame.key.get_pressed()[self.button]:
+        if c.pygame.key.get_pressed()[self.button]:
             if not self.pressed:
                 self.running = not self.running
                 self.pressed = True
         else:
             self.pressed = False
         if self.running:
-            if math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2) > 2:
-                self.heading = math.degrees(math.atan2(target[1] - self.y, target[0] - self.x))
-                self.x += c.TRACTOR_SPEED * math.cos(math.radians(self.heading))
-                self.y += c.TRACTOR_SPEED * math.sin(math.radians(self.heading))
+            if c.math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2) > 2:
+                self.heading = c.math.degrees(c.math.atan2(target[1] - self.y, target[0] - self.x))
+                self.x += c.TRACTOR_SPEED * c.math.cos(c.math.radians(self.heading))
+                self.y += c.TRACTOR_SPEED * c.math.sin(c.math.radians(self.heading))
 
     def getTarget(self, path):
         #get distance from tractor to target
@@ -68,7 +64,7 @@ class Tractor():
             if self.index >= len(path.path):
                 self.index = 0
             target = path.toCoords()[self.index]
-            if math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2) < 5:
+            if c.math.sqrt((target[0] - self.x) ** 2 + (target[1] - self.y) ** 2) < 5:
                 self.index += 1
                 if self.index >= len(path.path):
                     self.index = 0
@@ -79,40 +75,35 @@ class Tractor():
     
     def updateController(self):
         # if w key is pressed, move forward
-        if pygame.key.get_pressed()[pygame.K_w]:
+        if c.pygame.key.get_pressed()[c.pygame.K_w]:
             self.running = True
         else:
             self.running = False
         
         # if s key is pressed, move backward
-        if pygame.key.get_pressed()[pygame.K_s]:
+        if c.pygame.key.get_pressed()[c.pygame.K_s]:
             self.running = True
             self.y += self.speed
         else:
             self.running = False
 
         # if a key is pressed, turn left
-        if pygame.key.get_pressed()[pygame.K_a]:
+        if c.pygame.key.get_pressed()[c.pygame.K_a]:
             self.running = True
             self.heading += 5
         else:
             self.running = False
         # if d key is pressed, turn right
-        if pygame.key.get_pressed()[pygame.K_d]:
+        if c.pygame.key.get_pressed()[c.pygame.K_d]:
             self.running = True
             self.heading -= 5
         else:
             self.running = False
 
-# tractor = pygame.image.load("images/tractor.png")
-    # tractor = pygame.transform.scale(tractor, (120, 80))
-    # tractor = pygame.transform.flip(tractor, True, False)
-    # screen.blit(tractor, (400, 800))
-
 class Path():
     def __init__(self):
         #make an empty array of points
-        self.path = np.empty((0, 2))
+        self.path = c.np.empty((0, 2))
         self.clicked = False
         self.selecting = True
 
@@ -121,28 +112,28 @@ class Path():
         coords = []
         if len(self.path) > 0:
             for point in self.path:
-                coords.append(getCenterTileLocation(point))
+                coords.append(c.getCenterTileLocation(point))
         return coords
 
     def addPoint(self, x, y):
         #add a point to the path
-        self.path = np.append(self.path, [[x, y]], axis=0)
+        self.path = c.np.append(self.path, [[x, y]], axis=0)
 
     def removePoint(self):
         #remove the last point from the path
         if len(self.path) > 0:
-            self.path = np.delete(self.path, -1, 0)
+            self.path = c.np.delete(self.path, -1, 0)
 
     def draw(self, screen, tile):
         #draw the path
         if self.selecting:
             if tile[0] >= 0 and tile[0] <= 24 and tile[1] >= 0 and tile[1] <= 24:
-                drawTileAlpha(screen, tile, (255, 0, 0, 100))
+                c.drawTileAlpha(screen, tile, (255, 0, 0, 100))
             if len(self.path) > 1:
-                pygame.draw.lines(screen, c.WHITE, False, self.toCoords(), 2)
+                c.pygame.draw.lines(screen, c.WHITE, False, self.toCoords(), 2)
 
     def update(self, screen, mouse, click):
-        tile = getClosestTile(mouse)
+        tile = c.getClosestTile(mouse)
         if click[0] and not self.clicked:
             self.clicked = True
             if tile[0] >= 0 and tile[0] <= 24 and tile[1] >= 0 and tile[1] <= 24:

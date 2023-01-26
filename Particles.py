@@ -1,5 +1,3 @@
-import pygame
-import random
 import Constants as c
 
 class Particle:
@@ -10,7 +8,7 @@ class Particle:
         self.size = size
         self.lifespan = lifespan
         self.age = 0
-        self.velocity = [random.uniform(-1, 1), random.uniform(0, 1)]
+        self.velocity = [c.uniform(-1, 1), c.uniform(0, 1)]
         self.is_dead = False
 
     def update(self):
@@ -21,7 +19,7 @@ class Particle:
             self.is_dead = True
 
     def draw(self, screen):
-        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.size)
+        c.pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.size)
 
 
 class ParticleSystem:
@@ -39,5 +37,5 @@ class ParticleSystem:
             particle.draw(screen)
 
     def spawn_particle(self, x, y):
-        new_particle = Particle(x + random.uniform(-5, 5), y + random.uniform(-5, 5), self.color, 2, 60)
+        new_particle = Particle(x + c.uniform(-5, 5), y + c.uniform(-5, 5), self.color, 2, 60)
         self.particles.append(new_particle)

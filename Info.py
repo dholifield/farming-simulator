@@ -1,6 +1,4 @@
-import pygame
 import Constants as c
-from random import randrange
 
 fid = open("corn_prices.txt", "r")
 corn_data = fid.readlines()
@@ -8,32 +6,32 @@ fid.close()
 
 class Info():
     def __init__(self):
-        self.corn_logo = pygame.transform.scale(pygame.image.load("images/corn_icon.png").convert_alpha(), (75, 75))
-        self.coin_logo = pygame.transform.scale(pygame.image.load("images/coin.png").convert_alpha(), (62,62))
-        #self.bank_logo = pygame.image.load("images/tractor270.png").convert_alpha()
-        self.font = pygame.font.Font("consolas.ttf", 20)
-        self.font2 = pygame.font.Font("consolas.ttf", 15)
+        self.corn_logo = c.pygame.transform.scale(c.pygame.image.load("images/corn_icon.png").convert_alpha(), (75, 75))
+        self.coin_logo = c.pygame.transform.scale(c.pygame.image.load("images/coin.png").convert_alpha(), (62,62))
+        #self.bank_logo = c.pygame.image.load("images/tractor270.png").convert_alpha()
+        self.font = c.pygame.font.Font("consolas.ttf", 20)
+        self.font2 = c.pygame.font.Font("consolas.ttf", 15)
         self.text_corn = self.font.render("Corn: " + str(c.corn_count), True, c.WHITE)
         self.text_balance = self.font.render("Balance: $%.2f" %c.balance, True, c.WHITE)
         self.text_corn_price = self.font.render("Corn Price: $%.2f" %c.CORN_PRICE, True, c.WHITE)
         self.text_seed_cost = self.font.render("Seed Cost: $%.2f" %c.SEED_COST, True, c.WHITE)
         self.sell_button = self.font.render("Sell Corn", True, c.WHITE)
-        self.surface_button = pygame.Surface((125, 50))
-        self.corn_index = randrange(0, len(corn_data))
+        self.surface_button = c.pygame.Surface((125, 50))
+        self.corn_index = c.randrange(0, len(corn_data))
         self.timer = 120
         self.past_five = []
 
         self.speed_button = self.font2.render("Upgrade Speed [3] [$1000]", True, c.WHITE)
-        self.surface_speed_button = pygame.Surface((220, 30))
+        self.surface_speed_button = c.pygame.Surface((220, 30))
         self.speed_button_clicked = False
 
         self.yield_button = self.font2.render("Upgrade Growing [1] [$2500]", True, c.WHITE)
-        self.surface_yield_button = pygame.Surface((235, 30))
+        self.surface_yield_button = c.pygame.Surface((235, 30))
         self.yield_button_clicked = False
 
     def updateCornPrice(self): #add update later
         if self.timer == 0:
-            self.corn_index = randrange(0, len(corn_data))
+            self.corn_index = c.randrange(0, len(corn_data))
             if self.corn_index >= len(corn_data):
                 self.corn_index = 0
             self.timer = 120
@@ -47,13 +45,12 @@ class Info():
         else:
             self.timer -= 1
         
-
     def showGraph(self, screen):
         points = []
         for i in range(len(self.past_five)):
             points.append((i * 62 + 50, 50 - self.past_five[i] * 5))
         if len(points) > 1:
-            pygame.draw.lines(screen, c.WHITE, False, points, 2)
+            c.pygame.draw.lines(screen, c.WHITE, False, points, 2)
 
     def sellCorn(self):
         c.balance += c.corn_count * c.CORN_PRICE
@@ -66,8 +63,8 @@ class Info():
         self.text_seed_cost = self.font.render("Seed Cost: $%.2f" %c.SEED_COST, True, c.WHITE)
 
     def draw(self, screen):
-        self.surface_left = pygame.Surface((250, 150), pygame.SRCALPHA)
-        self.surface_right = pygame.Surface((250, 150), pygame.SRCALPHA)
+        self.surface_left = c.pygame.Surface((250, 150), c.pygame.SRCALPHA)
+        self.surface_right = c.pygame.Surface((250, 150), c.pygame.SRCALPHA)
 
         self.surface_left.fill(c.BLACK)
         self.surface_right.fill(c.BLACK)
